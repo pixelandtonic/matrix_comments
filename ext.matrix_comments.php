@@ -9,8 +9,8 @@
  * @license   http://creativecommons.org/licenses/by-sa/3.0/ Attribution-Share Alike 3.0 Unported
  */
 
-class Matrix_comments_ext
-{
+class Matrix_comments_ext {
+
 	var $name           = 'Matrix Comments';
 	var $version        = '1.0.0';
 	var $description    = 'Enables per-Matrix-row commenting';
