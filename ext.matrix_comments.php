@@ -1,24 +1,24 @@
-<?php if ( ! defined('APP_VER')) exit('No direct script access allowed');
+<?php if (! defined('APP_VER')) exit('No direct script access allowed');
 
 
 /**
- * Matrix Comments
+ * Matrix Comments extension for EE2
  *
  * @author    Brad Bell <brad@pixelandtonic.com>
- * @copyright Copyright (c) 2010 Pixel & Tonic
+ * @copyright Copyright (c) 2011 Pixel & Tonic
  * @license   http://creativecommons.org/licenses/by-sa/3.0/ Attribution-Share Alike 3.0 Unported
  */
 
 class Matrix_comments_ext
 {
-
-    var $name           = 'Matrix Comments';
+	var $name           = 'Matrix Comments';
 	var $version        = '1.0.0';
-	var $description    = 'Enables per row comments on a Matrix field type.';
+	var $description    = 'Enables per-Matrix-row commenting';
 	var $settings_exist = 'n';
 	var $docs_url       = 'http://github.com/brandonkelly/matrix_comments';
-    var $column_name    = 'matrix_row_id';
-    var $table_name     = 'comments';
+
+	var $column_name    = 'matrix_row_id';
+	var $table_name     = 'comments';
 
 	/**
 	 * Class Constructor
@@ -32,32 +32,43 @@ class Matrix_comments_ext
 	// --------------------------------------------------------------------
 
 	/**
+	 * Column Exists?
+	 */
+	private function _column_exists()
+	{
+		return $this->EE->db->field_exists($this->column_name, $this->table_name);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Activate Extension
 	 */
 	function activate_extension()
 	{
         // no need to add our custom column if it already exists.
-        if(! $this->_column_exists())
-        {
-            $this->EE->load->dbforge();
+		if (! $this->_column_exists())
+		{
+			$this->EE->load->dbforge();
 
-            $this->EE->dbforge->add_column(
-                $this->table_name,
-                array(
-                    $this->column_name => array(
-                        'type' => 'INT',
-                        'constraint' => 10,
-                        'unsigned' => TRUE,
-                        'null' => TRUE)
-                )
-            );
-        }
+			$this->EE->dbforge->add_column(
+				$this->table_name,
+				array(
+					$this->column_name => array(
+						'type' => 'INT',
+						'constraint' => 10,
+						'unsigned' => TRUE,
+						'null' => TRUE)
+				)
+			);
+		}
 
-		// add the row to exp_extensions
+		// add the rows to exp_extensions
+
 		$this->EE->db->insert('extensions', array(
 			'class'    => 'Matrix_comments_ext',
 			'method'   => 'insert_comment_insert_array',
-            'hook'     => 'insert_comment_insert_array',
+			'hook'     => 'insert_comment_insert_array',
 			'settings' => '',
 			'priority' => 10,
 			'version'  => $this->version,
@@ -67,7 +78,7 @@ class Matrix_comments_ext
         $this->EE->db->insert('extensions', array(
 			'class'    => 'Matrix_comments_ext',
 			'method'   => 'comment_entries_query',
-            'hook'     => 'comment_entries_query',
+			'hook'     => 'comment_entries_query',
 			'settings' => '',
 			'priority' => 10,
 			'version'  => $this->version,
@@ -89,55 +100,59 @@ class Matrix_comments_ext
 	 */
 	function disable_extension()
 	{
-        if($this->_column_exists())
-        {
-            $this->EE->load->dbforge();
-            $this->EE->dbforge->drop_column($this->table_name, $this->column_name);
-        }
+		if ($this->_column_exists())
+		{
+			$this->EE->load->dbforge();
+			$this->EE->dbforge->drop_column($this->table_name, $this->column_name);
+		}
 
 		// Remove all Matrix_comments_ext rows from exp_extensions
 		$this->EE->db->where('class', 'Matrix_comments_ext')
 		             ->delete('exp_extensions');
 	}
 
-    function comment_entries_query()
-    {
-        $row_id = $this->EE->TMPL->fetch_param('matrix_row_id');
-        
-        if($row_id)
-        {
-            if($row_id == 'IS_EMPTY')
-            {
-                $this->EE->db->where('`matrix_row_id` IS NULL', NULL, FALSE);
-            }
-            else
-            {
-                $this->EE->db->where('matrix_row_id', $row_id);
-            }
-        }
-    }
+	// --------------------------------------------------------------------
 
-    function insert_comment_insert_array($data)
-    {
-        // If another extension shares the same hook,
+	/**
+	 * comment_entries_query ext hook
+	 */
+	function comment_entries_query()
+	{
+		$row_id = $this->EE->TMPL->fetch_param('matrix_row_id');
+
+		if ($row_id)
+		{
+			if ($row_id == 'IS_EMPTY')
+			{
+				$this->EE->db->where('`matrix_row_id` IS NULL', NULL, FALSE);
+			}
+			else
+			{
+				$this->EE->db->where('matrix_row_id', $row_id);
+			}
+		}
+	}
+
+	/**
+	 * insert_comment_insert_array ext hook
+	 */
+	function insert_comment_insert_array($data)
+	{
+		// If another extension shares the same hook,
 		// we need to get the latest and greatest config
 		if ($this->EE->extensions->last_call !== FALSE)
 		{
 			$data = $this->EE->extensions->last_call;
 		}
 
-        $row_id = $this->EE->input->post($this->column_name);
-        
-        if($row_id)
-        {
-            $data[$this->column_name] = $row_id;
-        }
+		$row_id = $this->EE->input->post($this->column_name);
 
-        return $data;
-    }
+		if ($row_id)
+		{
+			$data[$this->column_name] = $row_id;
+		}
 
-    private function _column_exists()
-    {
-        return $this->EE->db->field_exists($this->column_name, $this->table_name);
-    }
+		return $data;
+	}
+
 }
