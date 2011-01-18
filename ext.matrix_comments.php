@@ -118,17 +118,17 @@ class Matrix_comments_ext {
 	 */
 	function comment_entries_query()
 	{
-		$row_id = $this->EE->TMPL->fetch_param('matrix_row_id');
+		$row_id = $this->EE->TMPL->fetch_param($this->column_name);
 
 		if ($row_id)
 		{
 			if ($row_id == 'IS_EMPTY')
 			{
-				$this->EE->db->where('`matrix_row_id` IS NULL', NULL, FALSE);
+				$this->EE->db->where('`'.$this->column_name.'', NULL, FALSE);
 			}
 			else
 			{
-				$this->EE->db->where('matrix_row_id', $row_id);
+				$this->EE->db->where($this->column_name, $row_id);
 			}
 		}
 	}
