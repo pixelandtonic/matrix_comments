@@ -120,16 +120,20 @@ class Matrix_comments_ext {
 	{
 		$row_id = $this->EE->TMPL->fetch_param('matrix_row_id');
 
-		if ($row_id)
+		// did they pass a matrix_row_id= param?
+		if ($row_id !== FALSE)
 		{
-			if ($row_id == 'IS_EMPTY')
+			// was it actually set to anything?
+			if ($row_id)
 			{
-				$this->EE->db->where('`matrix_row_id` IS NULL', NULL, FALSE);
-			}
-			else
-			{
+				// only show comments for that row
 				$this->EE->db->where('matrix_row_id', $row_id);
 			}
+		}
+		else
+		{
+			// only show comments that aren't for a Matrix row
+			$this->EE->db->where('`matrix_row_id` IS NULL', NULL, FALSE);
 		}
 	}
 
