@@ -118,7 +118,7 @@ class Matrix_comments_ext {
 	 */
 	function comment_entries_query()
 	{
-		$row_id = $this->EE->TMPL->fetch_param('matrix_row_id');
+		$row_id = $this->EE->TMPL->fetch_param($this->column_name);
 
 		// did they pass a matrix_row_id= param?
 		if ($row_id !== FALSE)
@@ -127,13 +127,13 @@ class Matrix_comments_ext {
 			if ($row_id)
 			{
 				// only show comments for that row
-				$this->EE->db->where('matrix_row_id', $row_id);
+				$this->EE->db->where($this->column_name, $row_id);
 			}
 		}
 		else
 		{
 			// only show comments that aren't for a Matrix row
-			$this->EE->db->where('`matrix_row_id` IS NULL', NULL, FALSE);
+			$this->EE->db->where("`{$this->column_name}` IS NULL", NULL, FALSE);
 		}
 	}
 
