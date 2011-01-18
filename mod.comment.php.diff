@@ -1,0 +1,28 @@
+--- C:\EE Test\ExpressionEngine2Test\system\expressionengine\modules\comment\mod.comment - Backup.php	2010-12-20 12:23:04.000000000 -0800
++++ C:\EE Test\ExpressionEngine2Test\system\expressionengine\modules\comment\mod.comment.php	2011-01-18 12:03:49.000000000 -0800
+@@ -428,13 +428,24 @@
+ 			
+ 			$this_sort = ($random) ? 'random' : strtolower($sort);
+ 
+ 			$this->EE->db->order_by($order_by, $this_sort);
+ 		}
+ 
+-		$query = $this->EE->db->get('comments');
++		// -------------------------------------------
++		// 'comment_entries_query' hook.
++		//  - Override query that grabs current comments
++		//
++			if ($this->EE->extensions->active_hook('comment_entries_query') === TRUE)
++			{
++				$this->EE->extensions->call('comment_entries_query');
++			}
++		//
++		// -------------------------------------------
++
++        	$query = $this->EE->db->get('comments');
+ 		$result_ids = array();
+ 
+ 		if ($query->num_rows() > 0)
+ 		{
+ 			foreach ($query->result_array() as $row)
+ 			{
