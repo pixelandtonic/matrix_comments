@@ -1,0 +1,102 @@
+--- C:\EE Test\ExpressionEngine2Test\system\expressionengine\libraries\Subscription.php	2011-01-20 08:32:00.000000000 -0800
++++ D:\Public\ExpressionEngine2\system\expressionengine\libraries\Subscription.php	2010-12-20 12:23:04.000000000 -0800
+@@ -97,24 +97,12 @@
+ 		{
+ 			$this->EE->db->$func('email', $emails);
+ 		}
+ 		
+ 		$this->EE->db->select('member_id');
+ 		$this->EE->db->where($this->publisher);
+-		
+-		// -------------------------------------------
+-		// 'comment_subscription_issubscribed_query' hook.
+-		//  - Let's you apply additional logic to is_subscribed query
+-		//
+-		if ($this->EE->extensions->active_hook('comment_subscription_issubscribed_query') === TRUE)
+-		{
+-			$this->EE->extensions->call('comment_subscription_issubscribed_query');
+-		}
+-		//
+-		// -------------------------------------------
+-
+ 		$query = $this->EE->db->get($this->table);
+ 
+ 		if ($query->num_rows() > 0)
+ 		{
+ 			return TRUE;
+ 		}
+@@ -218,24 +206,12 @@
+ 					'member_id'			=> 0,
+ 					'email'				=> $email,
+ 					'subscription_date'	=> $this->EE->localize->now
+ 				));
+ 			}
+ 			
+-			// -------------------------------------------
+-			// 'comment_subscription_insert' hook.
+-			//  - Modify and play with the comment subscriptions before database insertion
+-			//
+-				if ($this->EE->extensions->active_hook('comment_subscription_insert') === TRUE)
+-				{
+-					$data = $this->EE->extensions->call('comment_subscription_insert', $data);
+-					if ($this->EE->extensions->end_script === TRUE) return $data;
+-				}
+-			//
+-			// -------------------------------------------
+-
+ 			// Batch it in case there are lots of them
+             $this->EE->db->insert_batch($this->table, $data);
+ 		}
+ 		
+ 		// Refresh existing subscriptions if there were any
+ 		// @todo update subscription date
+@@ -345,24 +321,12 @@
+ 				$this->EE->db->where('email !=', $ignore);
+ 			}
+ 		}
+ 		
+ 		$this->EE->db->select('subscription_id, member_id, notification_sent, hash');
+ 		$this->EE->db->where($this->publisher);
+-
+-		// -------------------------------------------
+-		// 'comment_subscription_query' hook.
+-		//  - Override query that grabs current comment subscriptions
+-		//
+-			if ($this->EE->extensions->active_hook('comment_subscription_query') === TRUE)
+-			{
+-				$this->EE->extensions->call('comment_subscription_query');
+-			}
+-		//
+-		// -------------------------------------------
+-
+ 		$query = $this->EE->db->get($this->table);
+ 		
+ 		if ( ! $query->num_rows())
+ 		{
+ 			return array();
+ 		}
+@@ -489,24 +453,12 @@
+ 			$this->EE->db->$func('email', $emails);
+ 		}
+ 		
+ 		$this->EE->db->set('notification_sent', $new_state);
+ 		
+ 		$this->EE->db->where($this->publisher);
+-		
+-		// -------------------------------------------
+-		// 'comment_subscription_notificationsent_update' hook.
+-		//  - Override query that grabs current comment subscriptions
+-		//
+-			if ($this->EE->extensions->active_hook('comment_subscription_notificationsent_update') === TRUE)
+-			{
+-				$this->EE->extensions->call('comment_subscription_notificationsent_update');
+-			}
+-		//
+-		// -------------------------------------------
+-
+ 		$this->EE->db->update($this->table);
+ 	}
+ 	
+ 	// --------------------------------------------------------------------
+ 	
+ 	/**

@@ -44,7 +44,7 @@ class Matrix_comments_ext {
 	/**
 	 *
 	 */
-	private function _get_rowid_NO_MATTER_THE_COST()
+	private function _get_rowid()
 	{
 		$row_id = NULL;
 		if(isset($this->EE->TMPL))
@@ -53,27 +53,6 @@ class Matrix_comments_ext {
 		}
 
 		if($row_id !== TRUE)
-		{
-			$row_id = $this->EE->input->post($this->template_key_name);
-
-			if(! $row_id)
-			{
-				$row_id = $this->_get_rowid_from_querystring();
-			}
-		}
-
-		return $row_id;
-	}
-
-	private function _get_rowid_NO_MATTER_THE_COST1()
-	{
-		if(isset($this->EE->TMPL))
-		{
-			$row_id = $this->EE->TMPL->fetch_param($this->template_key_name);
-		}
-
-		if($row_id !== TRUE)
-		//if(! isset($row_id))
 		{
 			$row_id = $this->EE->input->post($this->template_key_name);
 
@@ -174,7 +153,6 @@ class Matrix_comments_ext {
 									'hook' => 'comment_entries_insert'
 								),
 								array(
-									//'method' => 'apply_rowid_logic_to_query',
 									'method' => 'comment_entries_query',
 									'hook' => 'comment_entries_query'
 								),
@@ -183,17 +161,14 @@ class Matrix_comments_ext {
 									'hook' => 'comment_subscription_insert'
 								),
 								array(
-									//'method' => 'apply_rowid_logic_to_query',
 									'method' => 'comment_subscription_issubscribed_query',
 									'hook' => 'comment_subscription_issubscribed_query'
 								),
 								array(
-									//'method' => 'apply_rowid_logic_to_query',
 									'method' =>'comment_subscription_query',
 									'hook' => 'comment_subscription_query'
 								),
 								array(
-									//'method' => 'apply_rowid_logic_to_query',
 									'method' => 'comment_subscription_notificationsent_update',
 									'hook' => 'comment_subscription_notificationsent_update'
 								)
@@ -203,26 +178,6 @@ class Matrix_comments_ext {
 		{
 			$this->_add_ext_hook_to_db($row['method'], $row['hook']);
 		}
-	}
-
-	function comment_entries_query()
-	{
-		$this->apply_rowid_logic_to_query();
-	}
-
-	function comment_subscription_issubscribed_query()
-	{
-		$this->apply_rowid_logic_to_query();
-	}
-
-	function comment_subscription_query()
-	{
-		$this->apply_rowid_logic_to_query();
-	}
-
-	function comment_subscription_notificationsent_update()
-	{
-		$this->apply_rowid_logic_to_query();
 	}
 
 	/**
@@ -249,50 +204,12 @@ class Matrix_comments_ext {
 
 	// --------------------------------------------------------------------
 
-	/**
-	 * comment_entries_query ext hook
+	/*
+	 * Multiple hooks use this same logic
 	 */
-	/*function comment_entries_query()
-	{
-		$row_id = $this->_get_rowid_NO_MATTER_THE_COST();
-
-		// did they pass a matrix_row_id= param?
-		if ($row_id !== FALSE)
-		{
-			// was it actually set to anything?
-			if ($row_id)
-			{
-				// only show comments for that row
-				$this->EE->db->where($this->db_column_name, $row_id);
-			}
-		}
-		else
-		{
-			// only show comments that aren't for a Matrix row
-			$this->EE->db->where("`{$this->db_column_name}` IS NULL", NULL, FALSE);
-		}
-	}*/
-
 	function apply_rowid_logic_to_query()
 	{
-		$row_id = $this->_get_rowid_NO_MATTER_THE_COST();
-		
-		// was it actually set to anything?
-		if ($row_id)
-		{
-			// only show comments for that row
-			$this->EE->db->where($this->db_column_name, $row_id);
-		}
-		else
-		{
-			// only grab comments that aren't for a Matrix row
-			$this->EE->db->where("`{$this->db_column_name}` IS NULL", NULL, FALSE);
-		}
-	}
-
-	function apply_rowid_logic_to_query1()
-	{
-		$row_id = $this->_get_rowid_NO_MATTER_THE_COST1();
+		$row_id = $this->_get_rowid();
 
 		// was it actually set to anything?
 		if ($row_id)
@@ -308,59 +225,36 @@ class Matrix_comments_ext {
 	}
 
 	/**
-	 * comment_subscription_issubscribed_query ext hook
-	 */
-	/*function comment_subscription_issubscribed_query()
+	* comment_entries_query ext hook
+	*/
+	function comment_entries_query()
 	{
-		$row_id = $this->_get_rowid_NO_MATTER_THE_COST();
-
-		// was it actually set to anything?
-		if ($row_id)
-		{
-			// only show comments for that row
-			$this->EE->db->where($this->db_column_name, $row_id);
-		}
-		else
-		{
-			// only grab comments that aren't for a Matrix row
-			$this->EE->db->where("`{$this->db_column_name}` IS NULL", NULL, FALSE);
-		}
+		$this->apply_rowid_logic_to_query();
 	}
 
+	/**
+	* comment_subscription_issubscribed_query ext hook
+	*/
+	function comment_subscription_issubscribed_query()
+	{
+		$this->apply_rowid_logic_to_query();
+	}
+
+	/**
+	* comment_subscription_query ext hook
+	*/
+	function comment_subscription_query()
+	{
+		$this->apply_rowid_logic_to_query();
+	}
+
+	/**
+	* comment_subscription_notificationsent_update ext hook
+	*/
 	function comment_subscription_notificationsent_update()
 	{
-		$row_id = $this->_get_rowid_NO_MATTER_THE_COST();
-
-		// was it actually set to anything?
-		if ($row_id)
-		{
-			// only show comments for that row
-			$this->EE->db->where($this->db_column_name, $row_id);
-		}
-		else
-		{
-			// only grab comments that aren't for a Matrix row
-			$this->EE->db->where("`{$this->db_column_name}` IS NULL", NULL, FALSE);
-		}
-	}*/
-
-	/*function comment_subscription_query()
-	{
-		$row_id = $this->_get_rowid_NO_MATTER_THE_COST();
-
-		// was it actually set to anything?
-		if ($row_id)
-		{
-			// only show comments for that row
-			$this->EE->db->where($this->db_column_name, $row_id);
-		}
-		else
-		{
-			// only grab comments that aren't for a Matrix row
-			$this->EE->db->where("`{$this->db_column_name}` IS NULL", NULL, FALSE);
-		}
-	}*/
-
+		$this->apply_rowid_logic_to_query();
+	}
 
 	/**
 	 * insert_comment_insert_array ext hook
@@ -374,7 +268,7 @@ class Matrix_comments_ext {
 			$data = $this->EE->extensions->last_call;
 		}
 
-		$row_id = $this->_get_rowid_NO_MATTER_THE_COST();
+		$row_id = $this->_get_rowid();
 
 		if ($row_id)
 		{
@@ -396,7 +290,7 @@ class Matrix_comments_ext {
 			$data = $this->EE->extensions->last_call;
 		}
 
-		$row_id = $this->_get_rowid_NO_MATTER_THE_COST();
+		$row_id = $this->_get_rowid();
 
 		// did they pass a matrix_row_id= param?
 		if ($row_id !== FALSE)
