@@ -149,12 +149,16 @@ class Matrix_comments_ext {
 
 		$ext_hook_data = array(
 								array(
-									'method' => 'comment_entries_insert',
-									'hook' => 'comment_entries_insert'
+									'method' => 'insert_comment_insert_array',
+									'hook' => 'insert_comment_insert_array'
 								),
 								array(
 									'method' => 'comment_entries_query',
 									'hook' => 'comment_entries_query'
+								),
+								array(
+									'method' => 'comment_subscription_delete',
+									'hook' => 'comment_subscription_delete'
 								),
 								array(
 									'method' => 'comment_subscription_insert',
@@ -259,7 +263,7 @@ class Matrix_comments_ext {
 	/**
 	 * insert_comment_insert_array ext hook
 	 */
-	function comment_entries_insert($data)
+	function insert_comment_insert_array($data)
 	{
 		// If another extension shares the same hook,
 		// we need to get the latest and greatest config
@@ -276,6 +280,14 @@ class Matrix_comments_ext {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * comment_subscription_delete ext hook
+	 */
+	function comment_subscription_delete()
+	{
+		$this->apply_rowid_logic_to_query();
 	}
 
 	/**
