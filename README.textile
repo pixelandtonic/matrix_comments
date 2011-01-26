@@ -1,4 +1,4 @@
-h1. Matrix Comments celltype
+h1. Matrix Comments
 
 This extension for ExpressionEngine 2 enables per-row commenting with EE’s Comment module.
 
