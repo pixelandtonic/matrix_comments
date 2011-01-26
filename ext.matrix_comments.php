@@ -116,7 +116,16 @@ class Matrix_comments_ext {
 		// get the row ID right from the {exp:comment:entries}' matrix_row_id= param
 		$row_id = $this->EE->TMPL->fetch_param('matrix_row_id');
 
-		$this->_apply_row_id_to_query($row_id);
+		if ($row_id)
+		{
+			// only show comments for that row
+			$this->EE->db->where($this->db_column_name, $row_id);
+		}
+		else
+		{
+			// only grab comments that aren't for a Matrix row
+			$this->EE->db->where("`{$this->db_column_name}` IS NULL", NULL, FALSE);
+		}
 	}
 
 	/**
