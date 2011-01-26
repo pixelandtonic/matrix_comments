@@ -1,0 +1,39 @@
+h1. Matrix Comments celltype
+
+This celltype for Matrix on EE2 gives you the ability to create unique “URL Titles” within your Matrix fields.
+
+h3. Requirements
+
+* "ExpressionEngine 2":http://expressionengine.com/index.php?affiliate=brandonkelly
+* "Matrix":http://pixelandtonic.com/matrix 2.0.8 or later
+
+h3. Installation
+
+* Upload the matrix_comments folder to system/expressionengine/third_party/
+* Enable Matrix Comments in Add-Ons → Extensions
+* Add the comment_entries_query extension hook outlined in mod.comment.php.diff to system/expressionengine/modules/comment/mod.comment.php
+
+h3. Usage
+
+There are two steps involved in enabling per-row commenting.
+
+_Note: The following examples assume that your URL structure contains a Matrix row ID in the 4th segment. You may have to modify things a bit to get it working._
+
+First, tell the Comment Submission Form to associate submitted comments with a particular Matrix row by adding a hidden input somewhere inside the form:
+
+bc. {exp:comment:form ... }
+  <input type="hidden" name="matrix_row_id" value="{segment_4}" />
+  ...
+{/exp:comment:form}
+
+p. Second, tell the Comment Entries Tag to only grab comments associated with a particular Matrix row by adding the @matrix_row_id=@ parameter:
+
+bc. {exp:comment:entries ... matrix_row_id="{segment_4}"}
+  ...
+{/exp:comment:form}
+
+p. That’s it!
+
+h3. A Caveat
+
+There’s no simple way to get comment subscriptions to respect Matrix row associations. We’ve gone down that path, and come up with a mostly working implementation, but in the end decided that it was just too complicated and would be too burdensome on future EE upgrades to be worth including in the final release.
