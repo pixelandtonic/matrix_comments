@@ -12,7 +12,7 @@
 class Matrix_comments_ext {
 
 	var $name           = 'Matrix Comments';
-	var $version        = '1.0';
+	var $version        = '1.0.1';
 	var $description    = 'Enables per-Matrix-row commenting with EE’s Comment module';
 	var $settings_exist = 'n';
 	var $docs_url       = 'http://github.com/brandonkelly/matrix_comments';
