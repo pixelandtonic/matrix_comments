@@ -1,6 +1,6 @@
 h1. Matrix Comments celltype
 
-This celltype for Matrix on EE2 gives you the ability to create unique “URL Titles” within your Matrix fields.
+This extension for ExpressionEngine 2 enables per-row commenting with EE’s Comment module.
 
 h3. Requirements
 
