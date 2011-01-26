@@ -1,5 +1,5 @@
---- D:\Public\ExpressionEngine Source\ExpressionEngine 2.1.3 Clean no Data\system\expressionengine\modules\comment\mod.comment.php	2010-12-20 12:23:04.000000000 -0800
-+++ C:\EE Test\EE 2.1.3 Matrix Comments\system\expressionengine\modules\comment\mod.comment.php	2011-01-25 14:46:53.000000000 -0800
+--- system/expressionengine/modules/comment/mod.comment (Original).php
++++ system/expressionengine/modules/comment/mod.comment.php
 @@ -428,12 +428,23 @@
  			
  			$this_sort = ($random) ? 'random' : strtolower($sort);
@@ -11,10 +11,10 @@
 +		// 'comment_entries_query' hook.
 +		//  - Override query that grabs current comments
 +		//
-+		if ($this->EE->extensions->active_hook('comment_entries_query') === TRUE)
-+		{
-+			$this->EE->extensions->call('comment_entries_query');
-+		}
++			if ($this->EE->extensions->active_hook('comment_entries_query') === TRUE)
++			{
++				$this->EE->extensions->call('comment_entries_query');
++			}
 +		//
 +		// -------------------------------------------
 +
