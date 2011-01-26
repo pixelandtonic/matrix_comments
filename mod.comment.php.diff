@@ -1,15 +1,12 @@
 --- system/expressionengine/modules/comment/mod.comment (Original).php
 +++ system/expressionengine/modules/comment/mod.comment.php
-@@ -428,12 +428,23 @@
- 			
- 			$this_sort = ($random) ? 'random' : strtolower($sort);
- 
+@@ -431,6 +431,17 @@
  			$this->EE->db->order_by($order_by, $this_sort);
  		}
  
 +		// -------------------------------------------
 +		// 'comment_entries_query' hook.
-+		//  - Override query that grabs current comments
++		//  - Make changes to the query that grabs the current comments
 +		//
 +			if ($this->EE->extensions->active_hook('comment_entries_query') === TRUE)
 +			{
@@ -21,6 +18,3 @@
  		$query = $this->EE->db->get('comments');
  		$result_ids = array();
  
- 		if ($query->num_rows() > 0)
- 		{
- 			foreach ($query->result_array() as $row)
