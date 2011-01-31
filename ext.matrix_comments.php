@@ -119,12 +119,12 @@ class Matrix_comments_ext {
 		if ($row_id)
 		{
 			// only show comments for that row
-			$this->EE->db->where($this->db_column_name, $row_id);
+			$this->EE->db->where('matrix_row_id', $row_id);
 		}
 		else
 		{
 			// only grab comments that aren't for a Matrix row
-			$this->EE->db->where("`{$this->db_column_name}` IS NULL", NULL, FALSE);
+			$this->EE->db->where("`matrix_row_id` IS NULL", NULL, FALSE);
 		}
 	}
 
